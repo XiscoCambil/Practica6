@@ -20,20 +20,26 @@ public class Find{
         List<Atom> lista = new ArrayList<>();
         for (int i = 0; i < pattern.length(); i++) {
             char c = pattern.charAt(i);
-            if  (c == '?'){
+            if (c == '?') {
                 Atom a = new Atom();
                 a.type = Atom.Type.INTERROGANTE;
                 lista.add(a);
-            }else if(c == '@') {
+            } else if (c == '@') {
                 Atom a = new Atom();
                 a.type = Atom.Type.CHAR;
                 a.caracter = pattern.charAt(i + 1);
                 lista.add(a);
                 i++;
-            }else if(){
-
-
-            } else{
+            } else if (c == '%') {
+                Atom a = new Atom();
+                a.type = Atom.Type.INICIO;
+                lista.add(a);
+            }
+            else if (c == '$') {
+                Atom a = new Atom();
+                a.type = Atom.Type.FINAL;
+                a.caracter = c;
+            }else{
                 Atom a = new Atom();
                 a.type = Atom.Type.CHAR;
                 a.caracter = c;
@@ -60,6 +66,15 @@ public class Find{
                     case ARROBA:
                         if(c != a.caracter) return false;
                         break;
+                    case INICIO:
+                        Atom b = lista.get(j+1);
+                        if(b.caracter != text.charAt(0))return false;
+                        j++;
+                        break;
+                    case FINAL:
+                        if(i != text.length()-1){
+
+                        }
                 }
                 i++;
             }
@@ -130,7 +145,7 @@ public class Find{
 //                            if (text.charAt(i) == caracteres.charAt(k)) contador++;
 //                        }
 //                        if (contador == 0) return false;
-//                    }
+//                    }text,
 //                } else {
 //                    if (text.charAt(i) != pattern.charAt(j)) {
 //                        return false;
