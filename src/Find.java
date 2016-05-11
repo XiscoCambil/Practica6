@@ -5,24 +5,90 @@ import java.util.List;
  * Created by Xisco on 06/05/2016.
  */
 
-public class Find{
+public class Find {
     private String text;
-
+    private boolean hayDolar;
+    private int tamañoRango = 0;
+    private boolean hayGuion;
+    private int nGuiones;
+    private boolean RangoFallado = false;
 
     public Find(String text) {
         this.text = text;
     }
 
-    public boolean match(String pattern){
-        if (pattern.length() == 0){
+    public boolean match(String pattern) {
+        if (pattern.length() == 0) {
             return false;
         }
+        List<Atom> lista = ConstruirAtom(pattern);
+        hayDolar = Dollar(lista);
+        for (int i = 0; i < text.length(); i++) {
+            if (match2(lista, i) == true) return true;
+        }
+        return false;
+    }
+
+    public boolean match2(List<Atom> lista, int i) {
+        try {
+            for (int j = 0; j < lista.size(); j++) {
+                Atom a = lista.get(j);
+                char c = text.charAt(i);
+                if (j == lista.size() - 2 && hayDolar) {
+                    if (i != text.length() - 1) return false;
+                    if (i == text.length() - 1 && a.caracter != c) return false;
+                    return true;
+                }
+                switch (a.type) {
+                    case INTERROGANTE:
+                        break;
+                    case CHAR:
+                        if (c != a.caracter) return false;
+                        break;
+                    case ARROBA:
+                        if (c != a.caracter) return false;
+                        break;
+                    case INICIO:
+                        Atom b = lista.get(j + 1);
+                        if (b.caracter != text.charAt(0)) return false;
+                        j++;
+                        break;
+                    case DOLLAR:
+                        if (i < lista.size() - 1 && j < text.length() - 1 && a.caracter != c) return false;
+                        break;
+                    case CHARLIST:
+                        List<Atom> listaRango = new ArrayList<>();
+                        listaRango = SacarRangos(lista, j);
+                        boolean RangoCoincide = ComprobarRango(listaRango, i);
+                        if(RangoFallado){return false;}
+                        if (!RangoCoincide){RangoFallado = true; return false;}
+                        j += tamañoRango;
+                        break;
+                    case SUM:
+                        char caracterRepetido = text.charAt(i-1);
+                        if(caracterRepetido != lista.get(j-1).caracter && lista.get(j-1).caracter != ']')return false;
+                        else{
+                            if(i == text.length()-1){
+                               i--;
+                            }
+                        }
+                }
+                i++;
+            }
+        } catch (java.lang.StringIndexOutOfBoundsException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<Atom> ConstruirAtom(String pattern) {
         List<Atom> lista = new ArrayList<>();
         for (int i = 0; i < pattern.length(); i++) {
             char c = pattern.charAt(i);
             if (c == '?') {
                 Atom a = new Atom();
                 a.type = Atom.Type.INTERROGANTE;
+                a.caracter = c;
                 lista.add(a);
             } else if (c == '@') {
                 Atom a = new Atom();
@@ -33,55 +99,138 @@ public class Find{
             } else if (c == '%') {
                 Atom a = new Atom();
                 a.type = Atom.Type.INICIO;
-                lista.add(a);
-            }
-            else if (c == '$') {
-                Atom a = new Atom();
-                a.type = Atom.Type.FINAL;
                 a.caracter = c;
-            }else{
+                lista.add(a);
+            } else if (c == '$') {
+                Atom a = new Atom();
+                a.type = Atom.Type.DOLLAR;
+                a.caracter = c;
+                lista.add(a);
+            } else if (c == '[') {
+                Atom a = new Atom();
+                a.type = Atom.Type.CHARLIST;
+                a.caracter = c;
+                lista.add(a);
+            } else if (c == ']') {
+                Atom a = new Atom();
+                a.type = Atom.Type.CHARLISTFINAL;
+                a.caracter = c;
+                lista.add(a);
+            }else if (c == '+') {
+                Atom a = new Atom();
+                a.type = Atom.Type.SUM;
+                a.caracter = c;
+                lista.add(a);
+            } else {
                 Atom a = new Atom();
                 a.type = Atom.Type.CHAR;
                 a.caracter = c;
                 lista.add(a);
             }
         }
-        for (int i = 0; i < text.length(); i++) {
-           if (match2( lista, i) == true) return true;
+        return lista;
+    }
+
+    public boolean Dollar(List<Atom> lista) {
+        for (int i = 0; i < lista.size(); i++) {
+            Atom a = lista.get(i);
+            if (a.caracter == '$' && i == lista.size() - 1) return true;
         }
+
         return false;
     }
 
-    public boolean match2(List<Atom> lista,int i){
-        try{
-            for (int j = 0; j < lista.size(); j++) {
-                Atom a = lista.get(j);
-                char c = text.charAt(i);
-                switch(a.type){
-                    case INTERROGANTE:
-                    break;
-                    case CHAR:
-                        if(c != a.caracter) return false;
-                        break;
-                    case ARROBA:
-                        if(c != a.caracter) return false;
-                        break;
-                    case INICIO:
-                        Atom b = lista.get(j+1);
-                        if(b.caracter != text.charAt(0))return false;
-                        j++;
-                        break;
-                    case FINAL:
-                        if(i != text.length()-1){
-
-                        }
-                }
-                i++;
-            }
-        }catch (java.lang.StringIndexOutOfBoundsException e){
-            return false;
+    public List<Atom> SacarRangos(List<Atom> list, int j) {
+        List<Atom> listaRango = new ArrayList<>();
+        while (list.get(j).type != Atom.Type.CHARLISTFINAL) {
+            listaRango.add(AñadirAtomRango(list, list.get(j).caracter));
+            if (list.get(j).caracter == '-') nGuiones++;
+            tamañoRango++;
+            j++;
         }
-        return true;
+        listaRango.add(AñadirAtomRango(list, list.get(j).caracter));
+        return listaRango;
+    }
+
+    public Atom AñadirAtomRango(List<Atom> list, char c) {
+        Atom a = new Atom();
+        switch (c) {
+            case '-':
+                a.type = Atom.Type.GUION;
+                a.caracter = c;
+                hayGuion = true;
+                break;
+            case '[':
+                a.type = Atom.Type.CHARLIST;
+                a.caracter = c;
+                break;
+            case ']':
+                a.type = Atom.Type.CHARLISTFINAL;
+                a.caracter = c;
+                break;
+            default:
+                a.type = Atom.Type.CHAR;
+                a.caracter = c;
+                break;
+        }
+        return a;
+    }
+
+    public boolean ComprobarRango(List<Atom> listaRango, int c) {
+        int coincidencia = 0;
+        boolean resultado = false;
+        if (!hayGuion) {
+            for (int i = 0; i < listaRango.size(); i++) {
+                Atom a = listaRango.get(i);
+                if (a.caracter == text.charAt(c)) coincidencia++;
+            }
+            if (coincidencia == 0) return false;
+        } else {
+            List<Atom> Posiciones = new ArrayList<>();
+            for (int i = 0; i < listaRango.size(); i++) {
+                Atom a = listaRango.get(i);
+                if (a.type == Atom.Type.CHAR) Posiciones.add(a);
+                if (a.type == Atom.Type.CHARLIST) Posiciones.add(a);
+                if (a.type == Atom.Type.CHARLISTFINAL) Posiciones.add(a);
+                if (a.type == Atom.Type.GUION) {
+                    Atom b = listaRango.get(i + 2);
+                    // Si hay un rango y una letra exacta
+                    if (b.type == Atom.Type.CHAR && i == listaRango.size() - 3) {
+                        Posiciones.add(listaRango.get(i + 1));
+                        Posiciones.add(listaRango.get(i + 2));
+                        Atom r = new Atom();
+                        if (text.charAt(c) > Posiciones.get(0).caracter && text.charAt(c) < Posiciones.get(1).caracter || text.charAt(c) == Posiciones.get(4).caracter) {
+                            return true;
+                        }
+                        return false;
+                    } else if (b.type == Atom.Type.CHARLISTFINAL) {
+                        Posiciones.add(listaRango.get(i + 1));
+                        Posiciones.add(listaRango.get(i + 2));
+                        if (text.charAt(c) > Posiciones.get(1).caracter && text.charAt(c) < Posiciones.get(2).caracter) {
+                            return true;
+                        }
+                        return false;
+                    } else {
+                        for (int j = 0, k = 3 ; j < nGuiones; j++,k++) {
+                            if(j == 0){Posiciones.add(listaRango.get(k)); continue;}
+                            Posiciones.add(listaRango.get(k));
+                            Posiciones.add(listaRango.get(k+2));
+                            k+=2;
+                        }
+                        Posiciones.add(listaRango.get(listaRango.size()-1));
+                        for (int j = 1; j < Posiciones.size(); j++) {
+                            if (text.charAt(c) > Posiciones.get(j).caracter && text.charAt(c) < Posiciones.get(j+1).caracter)
+                                return true;
+                        }
+                        return false;
+                    }
+
+                }
+
+            }
+        }
+    return true;
+
     }
 
 }

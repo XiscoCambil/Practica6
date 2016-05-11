@@ -1,6 +1,6 @@
 import org.junit.Test;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.*;
 
 public class FindTest {
     @Test
@@ -86,57 +86,56 @@ public class FindTest {
         assertEquals(false, f.match("%This computer$ is black$"));
         assertEquals(true, f.match("ter$"));
         assertEquals(false, f.match("This$"));
-//        Find f = new Find("aaaaaaabc");
-//        assertEquals(true, f.match("%[abc]"));
-//
-//        f = new Find("This computer$ is black");
-//        assertEquals(true, f.match("%This computer$ is black$"));
-//        f = new Find("This computer$ is black$");
-//        assertEquals(false, f.match("%This computer$ is black$"));
-//        f = new Find("%This computer$ is black$");
-//        assertEquals(false, f.match("%This computer$ is black$$"));
-//        f = new Find("%This computer$ is black$");
-//        assertEquals(true, f.match("%%This computer$ is black$$"));
+
+        f = new Find("This computer$ is black");
+        assertEquals(true, f.match("%This computer$ is black$"));
+        f = new Find("This computer$ is black$");
+        assertEquals(false, f.match("%This computer$ is black$"));
+        f = new Find("%This computer$ is black$");
+        assertEquals(false, f.match("%This computer$ is black$$"));
+        f = new Find("%This computer$ is black$");
+        assertEquals(true, f.match("%%This computer$ is black$$"));
     }
-//
-//    @Test
-//    public void charClasses() {
-//        Find f = new Find("This is your life");
+
+    @Test
+    public void charClasses() {
+        Find f = new Find("This is your life");
 //        assertEquals(true, f.match("T[h]is"));
 //        assertEquals(true, f.match("T[abhc]is"));
 //        assertEquals(false, f.match("T[abc]is"));
 //        assertEquals(true, f.match("[tT]hi[ksn]"));
-//        assertEquals(false, f.match("This [is] your life"));
+        assertEquals(false, f.match("This [is] your life"));
 //        assertEquals(true, f.match("This is [sdfyjkl]our life"));
-//    }
-//
-//    @Test
-//    public void charClasses2() {
-//        Find f = new Find("Do what you can");
+    }
+
+    @Test
+    public void charClasses2() {
+        Find f = new Find("Do what you can");
 //        assertEquals(true, f.match("wha[r-v]"));
 //        assertEquals(false, f.match("[a-m]hat"));
-//        assertEquals(true, f.match("D[h-z] wha[j-u]"));
+        assertEquals(true, f.match("D[h-z] wha[j-u]"));
 //        assertEquals(false, f.match("[a-z]o "));
 //        assertEquals(true, f.match("[A-Z]o "));
 //        assertEquals(false, f.match("ca[A-Z]"));
 //        assertEquals(true, f.match("ca[A-Zn]"));
 //        assertEquals(true, f.match("ca[A-Za-z]"));
-//    }
+    }
 
-//    @Test
-//    public void closures1() {
-//        Find f = new Find("bb");
+
+    @Test
+    public void closures1() {
+        Find f = new Find("bb");
 //        assertEquals(true, f.match("b+"));
 //        assertEquals(true, f.match("[abc]+"));
 //        assertEquals(false, f.match("b[ac]+"));
-//
-//        f = new Find("aaaaaaabc");
+
+        f = new Find("aaaaaaabc");
 //        assertEquals(true, f.match("a+bc"));
 //        assertEquals(false, f.match("a+kbc"));
 //        assertEquals(true, f.match("ab+c"));
 //        assertEquals(false, f.match("abb+c"));
 //        assertEquals(false, f.match("az+c"));
-//        assertEquals(true, f.match("a+bc+$"));
+        assertEquals(true, f.match("a+bc+$"));
 //        assertEquals(true, f.match("%[abc]+$"));
 //        assertEquals(false, f.match("%[ab]+$"));
 //        assertEquals(false, f.match("az+bc"));
@@ -167,8 +166,7 @@ public class FindTest {
 //        assertEquals(false, f.match("14*2"));
 //        assertEquals(true, f.match("14*9"));
 //        assertEquals(false, f.match("14*9$"));
+//    }
+//
     }
-
-
-
-
+}
