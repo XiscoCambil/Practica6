@@ -31,6 +31,9 @@ public class Find {
 
     public boolean match2(List<Atom> lista, int i) {
         try {
+            if (RangoFallado) {
+                return false;
+            }
             for (int j = 0; j < lista.size(); j++) {
                 Atom a = lista.get(j);
                 char c = text.charAt(i);
@@ -60,16 +63,21 @@ public class Find {
                         List<Atom> listaRango = new ArrayList<>();
                         listaRango = SacarRangos(lista, j);
                         boolean RangoCoincide = ComprobarRango(listaRango, i);
-                        if(RangoFallado){return false;}
-                        if (!RangoCoincide){RangoFallado = true; return false;}
+                        if (!RangoCoincide) {
+                            RangoFallado = true;
+                            return false;
+                        }
                         j += tamañoRango;
+                        tamañoRango = 0;
+                        nGuiones = 0;
                         break;
                     case SUM:
-                        char caracterRepetido = text.charAt(i-1);
-                        if(caracterRepetido != lista.get(j-1).caracter && lista.get(j-1).caracter != ']')return false;
-                        else{
-                            if(i == text.length()-1){
-                               i--;
+                        char caracterRepetido = text.charAt(i - 1);
+                        if (caracterRepetido != lista.get(j - 1).caracter && lista.get(j - 1).caracter != ']')
+                            return false;
+                        else {
+                            if (i == text.length() - 1) {
+                                i--;
                             }
                         }
                 }
@@ -116,7 +124,7 @@ public class Find {
                 a.type = Atom.Type.CHARLISTFINAL;
                 a.caracter = c;
                 lista.add(a);
-            }else if (c == '+') {
+            } else if (c == '+') {
                 Atom a = new Atom();
                 a.type = Atom.Type.SUM;
                 a.caracter = c;
@@ -184,53 +192,24 @@ public class Find {
                 Atom a = listaRango.get(i);
                 if (a.caracter == text.charAt(c)) coincidencia++;
             }
-            if (coincidencia == 0) return false;
+            if (coincidencia > 0) return true;
         } else {
-            List<Atom> Posiciones = new ArrayList<>();
-            for (int i = 0; i < listaRango.size(); i++) {
-                Atom a = listaRango.get(i);
-                if (a.type == Atom.Type.CHAR) Posiciones.add(a);
-                if (a.type == Atom.Type.CHARLIST) Posiciones.add(a);
-                if (a.type == Atom.Type.CHARLISTFINAL) Posiciones.add(a);
-                if (a.type == Atom.Type.GUION) {
-                    Atom b = listaRango.get(i + 2);
-                    // Si hay un rango y una letra exacta
-                    if (b.type == Atom.Type.CHAR && i == listaRango.size() - 3) {
-                        Posiciones.add(listaRango.get(i + 1));
-                        Posiciones.add(listaRango.get(i + 2));
-                        Atom r = new Atom();
-                        if (text.charAt(c) > Posiciones.get(0).caracter && text.charAt(c) < Posiciones.get(1).caracter || text.charAt(c) == Posiciones.get(4).caracter) {
-                            return true;
-                        }
-                        return false;
-                    } else if (b.type == Atom.Type.CHARLISTFINAL) {
-                        Posiciones.add(listaRango.get(i + 1));
-                        Posiciones.add(listaRango.get(i + 2));
-                        if (text.charAt(c) > Posiciones.get(1).caracter && text.charAt(c) < Posiciones.get(2).caracter) {
-                            return true;
-                        }
-                        return false;
-                    } else {
-                        for (int j = 0, k = 3 ; j < nGuiones; j++,k++) {
-                            if(j == 0){Posiciones.add(listaRango.get(k)); continue;}
-                            Posiciones.add(listaRango.get(k));
-                            Posiciones.add(listaRango.get(k+2));
-                            k+=2;
-                        }
-                        Posiciones.add(listaRango.get(listaRango.size()-1));
-                        for (int j = 1; j < Posiciones.size(); j++) {
-                            if (text.charAt(c) > Posiciones.get(j).caracter && text.charAt(c) < Posiciones.get(j+1).caracter)
-                                return true;
-                        }
-                        return false;
+            for (int j = 0, k = 1; j < nGuiones; j++, k+=3) {
+                if (nGuiones == 1 && listaRango.get(k + 3).type == Atom.Type.CHAR ) {
+                    if(text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k+2).caracter || text.charAt(c) == listaRango.get(k+3).caracter )return true;
+                }else if(nGuiones == 1 && listaRango.get(k + 3).type == Atom.Type.CHARLISTFINAL){
+                    if(text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k+2).caracter)return true;
+                }else{
+                    if(text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k+2).caracter){resultado = true;}
+                    else{resultado = false;}
+                    if(j == nGuiones-1 && resultado){
+                        return true;
                     }
-
                 }
 
             }
         }
-    return true;
-
+        return false;
     }
 
 }

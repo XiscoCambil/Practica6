@@ -103,8 +103,8 @@ public class FindTest {
 //        assertEquals(true, f.match("T[h]is"));
 //        assertEquals(true, f.match("T[abhc]is"));
 //        assertEquals(false, f.match("T[abc]is"));
-//        assertEquals(true, f.match("[tT]hi[ksn]"));
-        assertEquals(false, f.match("This [is] your life"));
+        assertEquals(true, f.match("[tT]hi[ksn]"));
+//        assertEquals(false, f.match("This [is] your life"));
 //        assertEquals(true, f.match("This is [sdfyjkl]our life"));
     }
 
@@ -113,29 +113,29 @@ public class FindTest {
         Find f = new Find("Do what you can");
 //        assertEquals(true, f.match("wha[r-v]"));
 //        assertEquals(false, f.match("[a-m]hat"));
-        assertEquals(true, f.match("D[h-z] wha[j-u]"));
+//        assertEquals(true, f.match("D[h-z] wha[j-u]"));
 //        assertEquals(false, f.match("[a-z]o "));
 //        assertEquals(true, f.match("[A-Z]o "));
 //        assertEquals(false, f.match("ca[A-Z]"));
-//        assertEquals(true, f.match("ca[A-Zn]"));
+        assertEquals(true, f.match("ca[A-Zn]"));
 //        assertEquals(true, f.match("ca[A-Za-z]"));
-    }
+//    }
 
 
-    @Test
-    public void closures1() {
-        Find f = new Find("bb");
+//    @Test
+//    public void closures1() {
+//        Find f = new Find("bb");
 //        assertEquals(true, f.match("b+"));
 //        assertEquals(true, f.match("[abc]+"));
 //        assertEquals(false, f.match("b[ac]+"));
 
-        f = new Find("aaaaaaabc");
+//        f = new Find("aaaaaaabc");
 //        assertEquals(true, f.match("a+bc"));
 //        assertEquals(false, f.match("a+kbc"));
 //        assertEquals(true, f.match("ab+c"));
 //        assertEquals(false, f.match("abb+c"));
 //        assertEquals(false, f.match("az+c"));
-        assertEquals(true, f.match("a+bc+$"));
+//        assertEquals(true, f.match("a+bc+$"));
 //        assertEquals(true, f.match("%[abc]+$"));
 //        assertEquals(false, f.match("%[ab]+$"));
 //        assertEquals(false, f.match("az+bc"));
