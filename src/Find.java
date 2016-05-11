@@ -68,7 +68,7 @@ public class Find {
                         if (b.type == Atom.Type.CHARLIST) {
                             j++;
                             listaRango2 = SacarRangos(lista, j);
-                            if (!ComprobarRango(listaRango2, i)) {
+                            if (!ComprobarRango(listaRango2, i,j)) {
                                 RangoFallado = true;
                                 tamañoRango = 0;
                                 return false;
@@ -84,9 +84,7 @@ public class Find {
                         if (i < lista.size() - 1 && j < text.length() - 1 && a.caracter != c) return false;
                         break;
                     case CHARLIST:
-                        List<Atom> listaRango = new ArrayList<>();
-                        listaRango = SacarRangos(lista, j);
-                        if (!ComprobarRango(listaRango, i)) {
+                        if (!ComprobarRango(lista, i,j)) {
                             RangoFallado = true;
                             tamañoRango = 0;
                             return false;
@@ -172,7 +170,12 @@ public class Find {
                 a.type = Atom.Type.MUL;
                 a.caracter = c;
                 lista.add(a);
-            } else {
+            } else if (c == '-') {
+                Atom a = new Atom();
+                a.type = Atom.Type.GUION;
+                a.caracter = c;
+                lista.add(a);
+            }else {
                 Atom a = new Atom();
                 a.type = Atom.Type.CHAR;
                 a.caracter = c;
@@ -227,38 +230,55 @@ public class Find {
         return a;
     }
 
-    public boolean ComprobarRango(List<Atom> listaRango, int c) {
-        int coincidencia = 0;
+    public boolean ComprobarRango(List<Atom> listaRango, int c,int j) {
+        j++;
+        tamañoRango = 1;
         boolean resultado = false;
-        if (!hayGuion) {
-            for (int i = 1; i < listaRango.size() - 1; i++) {
-                Atom a = listaRango.get(i);
-                if (a.caracter == text.charAt(c)) coincidencia++;
-            }
-            if (coincidencia > 0) return true;
-        } else {
-            for (int j = 0, k = 1; j < nGuiones; j++, k += 3) {
-                if (nGuiones == 1 && listaRango.get(k + 3).type == Atom.Type.CHAR) {
-                    if (text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k + 2).caracter || text.charAt(c) == listaRango.get(k + 3).caracter)
-                        return true;
-                } else if (nGuiones == 1 && listaRango.get(k + 3).type == Atom.Type.CHARLISTFINAL) {
-                    if (text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k + 2).caracter)
-                        return true;
-                } else {
-                    if (text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k + 2).caracter) {
-                        resultado = true;
-                    } else {
-                        resultado = false;
-                    }
-                    if (j == nGuiones - 1 && resultado) {
-                        return true;
-                    }
+            while (listaRango.get(j).type != Atom.Type.CHARLISTFINAL) {
+                if (listaRango.get(j).type == Atom.Type.GUION) {
+                    if(text.charAt(c) > listaRango.get(j-1).caracter && text.charAt(c) < listaRango.get(j+1).caracter) resultado = true;
                 }
-
+                else if (listaRango.get(j).type == Atom.Type.CHAR) {
+                    if(listaRango.get(j+1).type != Atom.Type.GUION && listaRango.get(j-1).type != Atom.Type.GUION && text.charAt(c) == listaRango.get(j).caracter) resultado = true;
+                }
+                j++;
+                tamañoRango++;
             }
-        }
-        return false;
+
+        return resultado;
     }
+
+//        int coincidencia = 0;
+//        boolean resultado = false;
+//        if (!hayGuion) {
+//            for (int i = 1; i < listaRango.size() - 1; i++) {
+//                Atom a = listaRango.get(i);
+//                if (a.caracter == text.charAt(c)) coincidencia++;
+//            }
+//            if (coincidencia > 0) return true;
+//        } else {
+//            for (int j = 0, k = 1; j < nGuiones; j++, k += 3) {
+//                if (nGuiones == 1 && listaRango.get(k + 3).type == Atom.Type.CHAR) {
+//                    if (text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k + 2).caracter || text.charAt(c) == listaRango.get(k + 3).caracter)
+//                        return true;
+//                } else if (nGuiones == 1 && listaRango.get(k + 3).type == Atom.Type.CHARLISTFINAL) {
+//                    if (text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k + 2).caracter)
+//                        return true;
+//                } else {
+//                    if (text.charAt(c) > listaRango.get(k).caracter && text.charAt(c) < listaRango.get(k + 2).caracter) {
+//                        resultado = true;
+//                    } else {
+//                        resultado = false;
+//                    }
+//                    if (j == nGuiones - 1 && resultado) {
+//                        return true;
+//                    }
+//                }
+//
+//            }
+//        }
+//        return false;
+
 
     public void ReiniciarVariables() {
         hayGuion = false;
@@ -276,7 +296,7 @@ public class Find {
                 retroceso++;
             }
             List<Atom> l = SacarRangos(lista, j - retroceso);
-            if (!ComprobarRango(l, text.length() - 1)) return false;
+            if (!ComprobarRango(l, text.length() - 1,j)) return false;
             return true;
         }
         if (i != text.length() - 1 && j == lista.size() - 2) return false;
