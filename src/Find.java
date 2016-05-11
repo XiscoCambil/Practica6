@@ -12,7 +12,6 @@ public class Find {
     private boolean hayGuion;
     private int nGuiones;
     private boolean RangoFallado;
-    private boolean SumaCorrecta;
 
     public Find(String text) {
         this.text = text;
@@ -87,13 +86,6 @@ public class Find {
                     case CHARLIST:
                         List<Atom> listaRango = new ArrayList<>();
                         listaRango = SacarRangos(lista, j);
-                        j += tamañoRango+1;
-                        if(lista.get(j).type == Atom.Type.MUL ) {
-                            if(i == text.length()-1){
-                                return true;
-                            }
-                            break;
-                        }
                         if (!ComprobarRango(listaRango, i)) {
                             RangoFallado = true;
                             tamañoRango = 0;
@@ -104,18 +96,28 @@ public class Find {
                         nGuiones = 0;
                         break;
                     case SUM:
-                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && RangoFallado) return false;
-                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter) return false;
+                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && RangoFallado)
+                            return false;
+                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter)
+                            return false;
                         if (j < lista.size() - 1 && RangoFallado) return false;
-                        if (j < lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter) return false;
-                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) != lista.get(j - 1).caracter) return false;
-                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) == lista.get(j - 1).caracter) return true;
+                        if (j < lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter)
+                            return false;
+                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) != lista.get(j - 1).caracter)
+                            return false;
+                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) == lista.get(j - 1).caracter)
+                            return true;
                         break;
                     case MUL:
-                        if(j == lista.size()-1)return true;
-                        if(i == text.length()-1 && j == lista.size()-2 && text.charAt(i) == lista.get(j+1).caracter)return true;
-                        if(i != text.length()-1 && j != lista.size()-2 && text.charAt(i) == lista.get(j+1).caracter && j != 1) j++;
-                        break;
+                        if (text.charAt(i) != lista.get(j - 1).caracter) continue;
+                        if(text.charAt(i) == lista.get(j - 1).caracter){
+                            char caracter = text.charAt(i);
+                           while (caracter == text.charAt(i)) {
+                               if(i == text.length()-1){return true;}
+                               i++;
+                           }
+                            break;
+                        }if(lista.get(j-1).type == Atom.Type.CHARLISTFINAL ){}
                 }
                 i++;
             }
@@ -192,16 +194,16 @@ public class Find {
     public List<Atom> SacarRangos(List<Atom> list, int j) {
         List<Atom> listaRango = new ArrayList<>();
         while (list.get(j).type != Atom.Type.CHARLISTFINAL) {
-            listaRango.add(AñadirAtomRango(list, list.get(j).caracter));
+            listaRango.add(AñadirAtomRango(list.get(j).caracter));
             if (list.get(j).caracter == '-') nGuiones++;
             tamañoRango++;
             j++;
         }
-        listaRango.add(AñadirAtomRango(list, list.get(j).caracter));
+        listaRango.add(AñadirAtomRango(list.get(j).caracter));
         return listaRango;
     }
 
-    public Atom AñadirAtomRango(List<Atom> list, char c) {
+    public Atom AñadirAtomRango(char c) {
         Atom a = new Atom();
         switch (c) {
             case '-':
