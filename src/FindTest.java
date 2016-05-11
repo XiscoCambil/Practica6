@@ -85,8 +85,7 @@ public class FindTest {
         assertEquals(false, f.match("%computer$"));
         assertEquals(false, f.match("%This computer$ is black$"));
         assertEquals(true, f.match("ter$"));
-        assertEquals(false, f.match("This$"));
-
+      assertEquals(false, f.match("This$"));
         f = new Find("This computer$ is black");
         assertEquals(true, f.match("%This computer$ is black$"));
         f = new Find("This computer$ is black$");
@@ -119,35 +118,35 @@ public class FindTest {
         assertEquals(false, f.match("ca[A-Z]"));
         assertEquals(true, f.match("ca[A-Zn]"));
         assertEquals(true, f.match("ca[A-Za-z]"));
-//    }
+    }
 
 
-//    @Test
-//    public void closures1() {
-//        Find f = new Find("bb");
-//        assertEquals(true, f.match("b+"));
-//        assertEquals(true, f.match("[abc]+"));
-//        assertEquals(false, f.match("b[ac]+"));
+    @Test
+    public void closures1() {
+        Find f = new Find("bb");
+        assertEquals(true, f.match("b+"));
+        assertEquals(true, f.match("[abc]+"));
+        assertEquals(false, f.match("b[ac]+"));
 
-//        f = new Find("aaaaaaabc");
-//        assertEquals(true, f.match("a+bc"));
-//        assertEquals(false, f.match("a+kbc"));
-//        assertEquals(true, f.match("ab+c"));
-//        assertEquals(false, f.match("abb+c"));
-//        assertEquals(false, f.match("az+c"));
-//        assertEquals(true, f.match("a+bc+$"));
-//        assertEquals(true, f.match("%[abc]+$"));
-//        assertEquals(false, f.match("%[ab]+$"));
-//        assertEquals(false, f.match("az+bc"));
-//    }
-//
-//    @Test
-//    public void closures2() {
-//        Find f = new Find("bb");
-//        assertEquals(true, f.match("b*"));
-//        assertEquals(true, f.match("[abc]*"));
-//        assertEquals(true, f.match("b[ac]*"));
-//
+    f = new Find("aaaaaaaaaaabc");
+        assertEquals(true, f.match("a+bc"));
+        assertEquals(false, f.match("a+kbc"));
+        assertEquals(true, f.match("ab+c"));
+        assertEquals(false, f.match("abb+c"));
+        assertEquals(false, f.match("az+c"));
+        assertEquals(true, f.match("a+bc+$"));
+        assertEquals(true, f.match("%[abc]+$"));
+        assertEquals(false, f.match("%[ab]+$"));
+        assertEquals(false, f.match("az+bc"));
+    }
+
+    @Test
+    public void closures2() {
+        Find f = new Find("bb");
+        assertEquals(true, f.match("b*"));
+        assertEquals(true, f.match("[abc]*"));
+        assertEquals(true, f.match("b[ac]*"));
+
 //        f = new Find("aaaaaaabc");
 //        assertEquals(true, f.match("a*bc"));
 //        assertEquals(false, f.match("a*kbc"));
@@ -166,7 +165,6 @@ public class FindTest {
 //        assertEquals(false, f.match("14*2"));
 //        assertEquals(true, f.match("14*9"));
 //        assertEquals(false, f.match("14*9$"));
-//    }
-//
     }
+
 }

@@ -7,7 +7,7 @@ import java.util.List;
 public class Atom {
 
     public enum Type {
-        CHAR, INICIO, DOLLAR, CHARLIST, CHARLISTFINAL, SUM, INTERROGANTE, ARROBA, GUION
+        CHAR, INICIO, DOLLAR, CHARLIST, CHARLISTFINAL, SUM, INTERROGANTE, ARROBA, GUION, MUL
     }
 
 
