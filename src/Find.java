@@ -8,23 +8,24 @@ import java.util.List;
 public class Find {
     private String text;
     private boolean hayDolar;
-    private int tamañoRango = 0;
+    private int tamañoRango;
     private boolean hayGuion;
     private int nGuiones;
-    private boolean RangoFallado = false;
+    private boolean RangoFallado;
 
     public Find(String text) {
         this.text = text;
     }
 
     public boolean match(String pattern) {
+        ReiniciarVariables();
         if (pattern.length() == 0) {
             return false;
         }
         List<Atom> lista = ConstruirAtom(pattern);
         hayDolar = Dollar(lista);
         for (int i = 0; i < text.length(); i++) {
-            if (match2(lista, i) == true) return true;
+            if (match2(lista, i) == true)return true;
         }
         return false;
     }
@@ -38,8 +39,9 @@ public class Find {
                 Atom a = lista.get(j);
                 char c = text.charAt(i);
                 if (j == lista.size() - 2 && hayDolar) {
-                    if (i != text.length() - 1) return false;
-                    if (i == text.length() - 1 && a.caracter != c) return false;
+                    if (i != text.length() - 1){ hayDolar = false; return false;}
+                    if (i == text.length() - 1 && a.caracter != c){ hayDolar = false; return false;}
+                    hayDolar = false;
                     return true;
                 }
                 switch (a.type) {
@@ -62,9 +64,9 @@ public class Find {
                     case CHARLIST:
                         List<Atom> listaRango = new ArrayList<>();
                         listaRango = SacarRangos(lista, j);
-                        boolean RangoCoincide = ComprobarRango(listaRango, i);
-                        if (!RangoCoincide) {
+                        if (!ComprobarRango(listaRango, i)) {
                             RangoFallado = true;
+                            tamañoRango = 0;
                             return false;
                         }
                         j += tamañoRango;
@@ -188,7 +190,7 @@ public class Find {
         int coincidencia = 0;
         boolean resultado = false;
         if (!hayGuion) {
-            for (int i = 0; i < listaRango.size(); i++) {
+            for (int i = 1; i < listaRango.size()-1; i++) {
                 Atom a = listaRango.get(i);
                 if (a.caracter == text.charAt(c)) coincidencia++;
             }
@@ -210,6 +212,14 @@ public class Find {
             }
         }
         return false;
+    }
+
+    public void ReiniciarVariables(){
+     hayDolar = false;
+     tamañoRango = 0;
+     hayGuion = false;
+     nGuiones = 0;
+     RangoFallado = false;
     }
 
 }

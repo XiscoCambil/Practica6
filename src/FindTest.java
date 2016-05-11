@@ -100,25 +100,25 @@ public class FindTest {
     @Test
     public void charClasses() {
         Find f = new Find("This is your life");
-//        assertEquals(true, f.match("T[h]is"));
-//        assertEquals(true, f.match("T[abhc]is"));
-//        assertEquals(false, f.match("T[abc]is"));
+        assertEquals(true, f.match("T[h]is"));
+        assertEquals(true, f.match("T[abhc]is"));
+        assertEquals(false, f.match("T[abc]is"));
         assertEquals(true, f.match("[tT]hi[ksn]"));
-//        assertEquals(false, f.match("This [is] your life"));
-//        assertEquals(true, f.match("This is [sdfyjkl]our life"));
+        assertEquals(false, f.match("This [is] your life"));
+        assertEquals(true, f.match("This is [sdfyjkl]our life"));
     }
 
     @Test
     public void charClasses2() {
         Find f = new Find("Do what you can");
-//        assertEquals(true, f.match("wha[r-v]"));
-//        assertEquals(false, f.match("[a-m]hat"));
-//        assertEquals(true, f.match("D[h-z] wha[j-u]"));
-//        assertEquals(false, f.match("[a-z]o "));
-//        assertEquals(true, f.match("[A-Z]o "));
-//        assertEquals(false, f.match("ca[A-Z]"));
+        assertEquals(true, f.match("wha[r-v]"));
+        assertEquals(false, f.match("[a-m]hat"));
+        assertEquals(true, f.match("D[h-z] wha[j-u]"));
+        assertEquals(false, f.match("[a-z]o "));
+        assertEquals(true, f.match("[A-Z]o "));
+        assertEquals(false, f.match("ca[A-Z]"));
         assertEquals(true, f.match("ca[A-Zn]"));
-//        assertEquals(true, f.match("ca[A-Za-z]"));
+        assertEquals(true, f.match("ca[A-Za-z]"));
 //    }
 
 
