@@ -68,7 +68,7 @@ public class Find {
                         if (b.type == Atom.Type.CHARLIST) {
                             j++;
                             listaRango2 = SacarRangos(lista, j);
-                            if (!ComprobarRango(listaRango2, i,j)) {
+                            if (!ComprobarRango(listaRango2, i, j)) {
                                 RangoFallado = true;
                                 tamañoRango = 0;
                                 return false;
@@ -84,7 +84,7 @@ public class Find {
                         if (i < lista.size() - 1 && j < text.length() - 1 && a.caracter != c) return false;
                         break;
                     case CHARLIST:
-                        if (!ComprobarRango(lista, i,j)) {
+                        if (!ComprobarRango(lista, i, j)) {
                             RangoFallado = true;
                             tamañoRango = 0;
                             return false;
@@ -108,14 +108,18 @@ public class Find {
                         break;
                     case MUL:
                         if (text.charAt(i) != lista.get(j - 1).caracter) continue;
-                        if(text.charAt(i) == lista.get(j - 1).caracter){
+                        if (text.charAt(i) == lista.get(j - 1).caracter) {
                             char caracter = text.charAt(i);
-                           while (caracter == text.charAt(i)) {
-                               if(i == text.length()-1){return true;}
-                               i++;
-                           }
+                            while (caracter == text.charAt(i)) {
+                                if (i == text.length() - 1) {
+                                    return true;
+                                }
+                                i++;
+                            }
                             break;
-                        }if(lista.get(j-1).type == Atom.Type.CHARLISTFINAL ){}
+                        }
+                        if (lista.get(j - 1).type == Atom.Type.CHARLISTFINAL) {
+                        }
                 }
                 i++;
             }
@@ -175,7 +179,7 @@ public class Find {
                 a.type = Atom.Type.GUION;
                 a.caracter = c;
                 lista.add(a);
-            }else {
+            } else {
                 Atom a = new Atom();
                 a.type = Atom.Type.CHAR;
                 a.caracter = c;
@@ -230,21 +234,21 @@ public class Find {
         return a;
     }
 
-    public boolean ComprobarRango(List<Atom> listaRango, int c,int j) {
+    public boolean ComprobarRango(List<Atom> listaRango, int c, int j) {
         j++;
         tamañoRango = 1;
         boolean resultado = false;
-            while (listaRango.get(j).type != Atom.Type.CHARLISTFINAL) {
-                if (listaRango.get(j).type == Atom.Type.GUION) {
-                    if(text.charAt(c) > listaRango.get(j-1).caracter && text.charAt(c) < listaRango.get(j+1).caracter) resultado = true;
-                }
-                else if (listaRango.get(j).type == Atom.Type.CHAR) {
-                    if(listaRango.get(j+1).type != Atom.Type.GUION && listaRango.get(j-1).type != Atom.Type.GUION && text.charAt(c) == listaRango.get(j).caracter) resultado = true;
-                }
-                j++;
-                tamañoRango++;
+        while (listaRango.get(j).type != Atom.Type.CHARLISTFINAL) {
+            if (listaRango.get(j).type == Atom.Type.GUION) {
+                if (text.charAt(c) > listaRango.get(j - 1).caracter && text.charAt(c) < listaRango.get(j + 1).caracter)
+                    resultado = true;
+            } else if (listaRango.get(j).type == Atom.Type.CHAR) {
+                if (listaRango.get(j + 1).type != Atom.Type.GUION && listaRango.get(j - 1).type != Atom.Type.GUION && text.charAt(c) == listaRango.get(j).caracter)
+                    resultado = true;
             }
-
+            j++;
+            tamañoRango++;
+        }
         return resultado;
     }
 
@@ -296,7 +300,7 @@ public class Find {
                 retroceso++;
             }
             List<Atom> l = SacarRangos(lista, j - retroceso);
-            if (!ComprobarRango(l, text.length() - 1,j)) return false;
+            if (!ComprobarRango(l, text.length() - 1, j)) return false;
             return true;
         }
         if (i != text.length() - 1 && j == lista.size() - 2) return false;
