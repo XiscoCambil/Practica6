@@ -147,23 +147,23 @@ public class FindTest {
         assertEquals(true, f.match("[abc]*"));
         assertEquals(true, f.match("b[ac]*"));
 
-//        f = new Find("aaaaaaabc");
-//        assertEquals(true, f.match("a*bc"));
-//        assertEquals(false, f.match("a*kbc"));
-//        assertEquals(true, f.match("ab*c"));
-//        assertEquals(true, f.match("abb*c"));
-//        assertEquals(false, f.match("abbb*c"));
-//        assertEquals(true, f.match("az*bc"));
+        f = new Find("aaaaaaaabc");
+        assertEquals(true, f.match("a*bc"));
+        assertEquals(false, f.match("a*kbc"));
+        assertEquals(true, f.match("ab*c"));
+        assertEquals(true, f.match("abb*c"));
+        assertEquals(false, f.match("abbb*c"));
+        assertEquals(true, f.match("az*bc"));
 //
-//        f = new Find("192228888888888888886722222226");
+        f = new Find("192228888888888888886722222226");
 //        assertEquals(true, f.match("192*8*672*6"));
-//        assertEquals(false, f.match("2*78*6"));
-//        assertEquals(true, f.match("1*"));
-//        assertEquals(true, f.match("8*"));
-//        assertEquals(true, f.match("k*"));
+        assertEquals(false, f.match("2*78*6"));
+        assertEquals(true, f.match("1*"));
+        assertEquals(true, f.match("8*"));
+        assertEquals(true, f.match("k*"));
 //        assertEquals(true, f.match("%1[92867]*6$"));
 //        assertEquals(false, f.match("14*2"));
-//        assertEquals(true, f.match("14*9"));
+        assertEquals(true, f.match("14*9"));
 //        assertEquals(false, f.match("14*9$"));
     }
 

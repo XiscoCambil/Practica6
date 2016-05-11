@@ -87,6 +87,13 @@ public class Find {
                     case CHARLIST:
                         List<Atom> listaRango = new ArrayList<>();
                         listaRango = SacarRangos(lista, j);
+                        j += tamañoRango+1;
+                        if(lista.get(j).type == Atom.Type.MUL ) {
+                            if(i == text.length()-1){
+                                return true;
+                            }
+                            break;
+                        }
                         if (!ComprobarRango(listaRango, i)) {
                             RangoFallado = true;
                             tamañoRango = 0;
@@ -97,17 +104,17 @@ public class Find {
                         nGuiones = 0;
                         break;
                     case SUM:
-                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && RangoFallado)
-                            return false;
-                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter)
-                            return false;
+                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && RangoFallado) return false;
+                        if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter) return false;
                         if (j < lista.size() - 1 && RangoFallado) return false;
-                        if (j < lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter)
-                            return false;
-                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) != lista.get(j - 1).caracter)
-                            return false;
-                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) == lista.get(j - 1).caracter)
-                            return true;
+                        if (j < lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHAR && text.charAt(i) != lista.get(j - 1).caracter) return false;
+                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) != lista.get(j - 1).caracter) return false;
+                        if (j == lista.size() - 2 && lista.get(j + 1).type == Atom.Type.DOLLAR && text.charAt(i) == lista.get(j - 1).caracter) return true;
+                        break;
+                    case MUL:
+                        if(j == lista.size()-1)return true;
+                        if(i == text.length()-1 && j == lista.size()-2 && text.charAt(i) == lista.get(j+1).caracter)return true;
+                        if(i != text.length()-1 && j != lista.size()-2 && text.charAt(i) == lista.get(j+1).caracter && j != 1) j++;
                         break;
                 }
                 i++;
