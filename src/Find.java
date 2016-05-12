@@ -9,8 +9,6 @@ public class Find {
     private String text;
     private boolean hayDolar;
     private int tamañoRango;
-    private boolean hayGuion;
-    private int nGuiones;
     private boolean RangoFallado;
 
     public Find(String text) {
@@ -67,7 +65,6 @@ public class Find {
                         Atom b = lista.get(j + 1);
                         if (b.type == Atom.Type.CHARLIST) {
                             j++;
-                            listaRango2 = SacarRangos(lista, j);
                             if (!ComprobarRango(listaRango2, i, j)) {
                                 RangoFallado = true;
                                 tamañoRango = 0;
@@ -86,12 +83,10 @@ public class Find {
                     case CHARLIST:
                         if (!ComprobarRango(lista, i, j)) {
                             RangoFallado = true;
-                            tamañoRango = 0;
                             return false;
                         }
                         j += tamañoRango;
                         tamañoRango = 0;
-                        nGuiones = 0;
                         break;
                     case SUM:
                         if (j == lista.size() - 1 && lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && RangoFallado)
@@ -134,56 +129,26 @@ public class Find {
         for (int i = 0; i < pattern.length(); i++) {
             char c = pattern.charAt(i);
             if (c == '?') {
-                Atom a = new Atom();
-                a.type = Atom.Type.INTERROGANTE;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.INTERROGANTE));
             } else if (c == '@') {
-                Atom a = new Atom();
-                a.type = Atom.Type.CHAR;
-                a.caracter = pattern.charAt(i + 1);
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.CHAR));
                 i++;
             } else if (c == '%') {
-                Atom a = new Atom();
-                a.type = Atom.Type.INICIO;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.INICIO));
             } else if (c == '$') {
-                Atom a = new Atom();
-                a.type = Atom.Type.DOLLAR;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.DOLLAR));
             } else if (c == '[') {
-                Atom a = new Atom();
-                a.type = Atom.Type.CHARLIST;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.CHARLIST));
             } else if (c == ']') {
-                Atom a = new Atom();
-                a.type = Atom.Type.CHARLISTFINAL;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.CHARLISTFINAL));
             } else if (c == '+') {
-                Atom a = new Atom();
-                a.type = Atom.Type.SUM;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.SUM));
             } else if (c == '*') {
-                Atom a = new Atom();
-                a.type = Atom.Type.MUL;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.MUL));
             } else if (c == '-') {
-                Atom a = new Atom();
-                a.type = Atom.Type.GUION;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.GUION));
             } else {
-                Atom a = new Atom();
-                a.type = Atom.Type.CHAR;
-                a.caracter = c;
-                lista.add(a);
+                lista.add(AñadirAtom(c,pattern,i, Atom.Type.CHAR));
             }
         }
         return lista;
@@ -194,45 +159,9 @@ public class Find {
             Atom a = lista.get(i);
             if (a.caracter == '$' && i == lista.size() - 1) return true;
         }
-
         return false;
     }
 
-    public List<Atom> SacarRangos(List<Atom> list, int j) {
-        List<Atom> listaRango = new ArrayList<>();
-        while (list.get(j).type != Atom.Type.CHARLISTFINAL) {
-            listaRango.add(AñadirAtomRango(list.get(j).caracter));
-            if (list.get(j).caracter == '-') nGuiones++;
-            tamañoRango++;
-            j++;
-        }
-        listaRango.add(AñadirAtomRango(list.get(j).caracter));
-        return listaRango;
-    }
-
-    public Atom AñadirAtomRango(char c) {
-        Atom a = new Atom();
-        switch (c) {
-            case '-':
-                a.type = Atom.Type.GUION;
-                a.caracter = c;
-                hayGuion = true;
-                break;
-            case '[':
-                a.type = Atom.Type.CHARLIST;
-                a.caracter = c;
-                break;
-            case ']':
-                a.type = Atom.Type.CHARLISTFINAL;
-                a.caracter = c;
-                break;
-            default:
-                a.type = Atom.Type.CHAR;
-                a.caracter = c;
-                break;
-        }
-        return a;
-    }
 
     public boolean ComprobarRango(List<Atom> listaRango, int c, int j) {
         j++;
@@ -252,6 +181,42 @@ public class Find {
         return resultado;
     }
 
+    public Atom AñadirAtom(char c, String pattern,int i,Atom.Type type){
+        Atom a = new Atom();
+        if(c == '@'){
+            a.type = type;
+            a.caracter = pattern.charAt(i + 1);
+        }else{
+            a.type = type;
+            a.caracter = c;
+        }
+        return a;
+    }
+
+    public void ReiniciarVariables() {
+        RangoFallado = false;
+        tamañoRango = 0;
+    }
+
+    public boolean ComprobarDollar(List<Atom> lista, Atom a, int i, char c, int j) {
+        if (lista.get(lista.size() - 2).type == Atom.Type.SUM && lista.get(lista.size() - 3).type == Atom.Type.CHAR &&
+                text.charAt(i) != lista.get(lista.size() - 3).caracter) return false;
+        if (lista.get(lista.size() - 2).type == Atom.Type.SUM && lista.get(lista.size() - 3).type == Atom.Type.CHARLISTFINAL) {
+            int retroceso = 1;
+            while (lista.get(j - retroceso).type != Atom.Type.CHARLIST) {
+                retroceso++;
+            }
+            if (!ComprobarRango(lista, text.length() - 1, j)) return false;
+            return true;
+        }
+        if (i != text.length() - 1 && j == lista.size() - 2) return false;
+        if (i == text.length() - 1 && a.caracter != c) return false;
+        hayDolar = false;
+        return true;
+    }
+
+}
+// METODO RANGO ANTIGUO
 //        int coincidencia = 0;
 //        boolean resultado = false;
 //        if (!hayGuion) {
@@ -284,32 +249,6 @@ public class Find {
 //        return false;
 
 
-    public void ReiniciarVariables() {
-        hayGuion = false;
-        nGuiones = 0;
-        RangoFallado = false;
-        tamañoRango = 0;
-    }
-
-    public boolean ComprobarDollar(List<Atom> lista, Atom a, int i, char c, int j) {
-        if (lista.get(lista.size() - 2).type == Atom.Type.SUM && lista.get(lista.size() - 3).type == Atom.Type.CHAR &&
-                text.charAt(i) != lista.get(lista.size() - 3).caracter) return false;
-        if (lista.get(lista.size() - 2).type == Atom.Type.SUM && lista.get(lista.size() - 3).type == Atom.Type.CHARLISTFINAL) {
-            int retroceso = 1;
-            while (lista.get(j - retroceso).type != Atom.Type.CHARLIST) {
-                retroceso++;
-            }
-            List<Atom> l = SacarRangos(lista, j - retroceso);
-            if (!ComprobarRango(l, text.length() - 1, j)) return false;
-            return true;
-        }
-        if (i != text.length() - 1 && j == lista.size() - 2) return false;
-        if (i == text.length() - 1 && a.caracter != c) return false;
-        hayDolar = false;
-        return true;
-    }
-
-}
 //public class Find {
 //    private String text;
 //
