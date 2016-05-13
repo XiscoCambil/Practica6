@@ -128,16 +128,16 @@ public class FindTest {
         assertEquals(true, f.match("[abc]+"));
         assertEquals(false, f.match("b[ac]+"));
 
-    f = new Find("aaaaaaaaaaabc");
-//        assertEquals(true, f.match("a+bc"));
-//        assertEquals(false, f.match("a+kbc"));
-//        assertEquals(true, f.match("ab+c"));
-//        assertEquals(false, f.match("abb+c"));
-//        assertEquals(false, f.match("az+c"));
-//        assertEquals(true, f.match("a+bc+$"));
-//        assertEquals(true, f.match("%[abc]+$"));
-//        assertEquals(false, f.match("%[ab]+$"));
-//        assertEquals(false, f.match("az+bc"));
+    f = new Find("abc");
+        assertEquals(true, f.match("a+bc"));
+        assertEquals(false, f.match("a+kbc"));
+        assertEquals(true, f.match("ab+c"));
+        assertEquals(false, f.match("abb+c"));
+        assertEquals(false, f.match("az+c"));
+        assertEquals(true, f.match("a+bc+$"));
+        assertEquals(true, f.match("%[abc]+$"));
+        assertEquals(false, f.match("%[ab]+$"));
+        assertEquals(false, f.match("az+bc"));
     }
 
 //    @Test

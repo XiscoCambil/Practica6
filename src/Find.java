@@ -33,8 +33,15 @@ public class Find {
             }
             for (int j = 0; j < lista.size(); j++) {
                 Atom a = lista.get(j);
-                if(i == text.length()){
-                    if (a.type == Atom.Type.DOLLAR){
+                if (i == text.length()) {
+                    if (a.type == Atom.Type.DOLLAR) {
+                        return true;
+                    }
+                    if (a.caracter == '+') {
+                        if(lista.get(j-1).type == Atom.Type.CHAR && lista.get(j-1).caracter == text.charAt(i-1)) return true;
+                        if(lista.get(j-1).type == Atom.Type.CHARLISTFINAL && !RangoFallado)return true;
+                    }
+                    if (a.caracter == '*') {
                         return true;
                     }
                     return false;
@@ -50,6 +57,15 @@ public class Find {
                         if (c != a.caracter) return false;
                         break;
                     case INICIO:
+                        if(lista.get(j+1).type == Atom.Type.CHARLIST ){
+                            if (!ComprobarRango(lista, i, j)) {
+                                RangoFallado = true;
+                                return false;
+                            }
+                            j += tamañoRango;
+                            tamañoRango = 0;
+                            break;
+                        }
                         if (i > 0) return false;
                         j++;
                         break;
@@ -66,14 +82,16 @@ public class Find {
                     case CLOUSURE:
                         i--;
                         char caracterComparar = text.charAt(i);
-                        if(a.caracter == '+') {
+                        if (a.caracter == '+') {
                             if (lista.get(j - 1).type == Atom.Type.CHAR && caracterComparar == lista.get(j - 1).caracter) {
-                                while (text.charAt(i) == caracterComparar && i < text.length()-2){
+                                while (text.charAt(i) == caracterComparar) {
+                                    if(i == text.length()-1)return true;
                                     i++;
                                 }
-                                break;
+
                             }
                         }
+                        i--;
                         break;
                 }
                 i++;
@@ -138,10 +156,10 @@ public class Find {
         if (c == '@') {
             a.type = type;
             a.caracter = pattern.charAt(i + 1);
-        } else if(type == Atom.Type.CLOUSURE){
+        } else if (type == Atom.Type.CLOUSURE) {
             a.type = type;
             a.caracter = c;
-        }else{
+        } else {
             a.type = type;
             a.caracter = c;
         }
