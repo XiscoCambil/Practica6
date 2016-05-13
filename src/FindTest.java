@@ -121,14 +121,14 @@ public class FindTest {
     }
 
 //
-//    @Test
-//    public void closures1() {
-//        Find f = new Find("bb");
-//        assertEquals(true, f.match("b+"));
-//        assertEquals(true, f.match("[abc]+"));
-//        assertEquals(false, f.match("b[ac]+"));
-//
-//    f = new Find("aaaaaaaaaaabc");
+    @Test
+    public void closures1() {
+        Find f = new Find("bb");
+        assertEquals(true, f.match("b+"));
+        assertEquals(true, f.match("[abc]+"));
+        assertEquals(false, f.match("b[ac]+"));
+
+    f = new Find("aaaaaaaaaaabc");
 //        assertEquals(true, f.match("a+bc"));
 //        assertEquals(false, f.match("a+kbc"));
 //        assertEquals(true, f.match("ab+c"));
@@ -138,8 +138,8 @@ public class FindTest {
 //        assertEquals(true, f.match("%[abc]+$"));
 //        assertEquals(false, f.match("%[ab]+$"));
 //        assertEquals(false, f.match("az+bc"));
-//    }
-//
+    }
+
 //    @Test
 //    public void closures2() {
 //        Find f = new Find("bb");
