@@ -41,9 +41,8 @@ public class Find {
                         if(lista.get(j-1).type == Atom.Type.CHAR && lista.get(j-1).caracter == text.charAt(i-1)) return true;
                         if(lista.get(j-1).type == Atom.Type.CHARLISTFINAL && !RangoFallado)return true;
                     }
-                    if (a.caracter == '*') {
-                        return true;
-                    }
+                    if (a.caracter == '*' ) {return true;}
+
                     return false;
                 }
                 char c = text.charAt(i);
@@ -51,6 +50,10 @@ public class Find {
                     case INTERROGANTE:
                         break;
                     case CHAR:
+                        if(j < lista.size()-1 && lista.get(j+1).caracter == '*' ){
+                            if(lista.get(j).caracter != text.charAt(i)){i--;}
+                            j++;
+                            break;}
                         if (c != a.caracter) return false;
                         break;
                     case ARROBA:
@@ -85,12 +88,21 @@ public class Find {
                         if (a.caracter == '+') {
                             if (lista.get(j - 1).type == Atom.Type.CHAR && caracterComparar == lista.get(j - 1).caracter) {
                                 while (text.charAt(i) == caracterComparar) {
-                                    if(i == text.length()-1)return true;
+                                    if (i == text.length() - 1) return true;
                                     i++;
                                 }
 
                             }
                         }
+//                        }  if (a.caracter == '*') {
+//                        if (lista.get(j - 1).type == Atom.Type.CHAR) {
+//                            while (text.charAt(i) == caracterComparar) {
+//                                if(i == text.length()-1)return true;
+//                                i++;
+//                            }
+//
+//                        }
+//                    }
                         i--;
                         break;
                 }
@@ -146,6 +158,7 @@ public class Find {
                     resultado = true;
             }
             j++;
+            if(j < listaRango.size()-1 && listaRango.get(j+1).caracter == '*'){tamañoRango++; return true;}
             tamañoRango++;
         }
         return resultado;
