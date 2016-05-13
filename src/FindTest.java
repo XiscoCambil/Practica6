@@ -154,17 +154,17 @@ public class FindTest {
         assertEquals(true, f.match("abb*c"));
         assertEquals(false, f.match("abbb*c"));
         assertEquals(true, f.match("az*bc"));
-//
+
         f = new Find("192228888888888888886722222226");
-//        assertEquals(true, f.match("192*8*672*6"));
-//        assertEquals(false, f.match("2*78*6"));
-//        assertEquals(true, f.match("1*"));
-//        assertEquals(true, f.match("8*"));
-//        assertEquals(true, f.match("k*"));
-//        assertEquals(true, f.match("%1[92867]*6$"));
-//        assertEquals(false, f.match("14*2"));
-//        assertEquals(true, f.match("14*9"));
-//        assertEquals(false, f.match("14*9$"));
+        assertEquals(true, f.match("192*8*672*6"));
+        assertEquals(false, f.match("2*78*6"));
+        assertEquals(true, f.match("1*"));
+        assertEquals(true, f.match("8*"));
+        assertEquals(true, f.match("k*"));
+        assertEquals(true, f.match("%1[92867]*6$"));
+        assertEquals(false, f.match("14*2"));
+        assertEquals(true, f.match("14*9"));
+        assertEquals(false, f.match("14*9$"));
     }
 
 }
