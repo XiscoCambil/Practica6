@@ -128,8 +128,9 @@ public class Find {
             if (c == '?') {
                 lista.add(AñadirAtom(c, pattern, i, Atom.Type.INTERROGANTE));
             } else if (c == '@') {
-                lista.add(AñadirAtom(c, pattern, i, Atom.Type.CHAR));
                 i++;
+                c = pattern.charAt(i);
+                lista.add(AñadirAtom(c, pattern, i, Atom.Type.CHAR));
             } else if (c == '%') {
                 lista.add(AñadirAtom(c, pattern, i, Atom.Type.INICIO));
             } else if (c == '$') {
@@ -181,16 +182,8 @@ public class Find {
     //Metodo para clasificar los atoms.
     private Atom AñadirAtom(char c, String pattern, int i, Atom.Type type) {
         Atom a = new Atom();
-        if (c == '@') {
-            a.type = type;
-            a.caracter = pattern.charAt(i + 1);
-        } else if (type == Atom.Type.CLOUSURE) {
-            a.type = type;
-            a.caracter = c;
-        } else {
-            a.type = type;
-            a.caracter = c;
-        }
+        a.type = type;
+        a.caracter = c;
         return a;
     }
 
@@ -201,13 +194,6 @@ public class Find {
     }
 
     //Metodo para controlar los posibles finales.
-
-
-
-
-
-
-
     private boolean ControlFinal(Atom a, List<Atom> lista, int j, int i) {
         if (a.type == Atom.Type.DOLLAR) {
             return true;

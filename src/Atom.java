@@ -6,10 +6,11 @@ import java.util.List;
  */
 public class Atom {
 
+    //Distintos tipos posibles para los Atoms
     public enum Type {
         CHAR, INICIO, DOLLAR, CHARLIST, CHARLISTFINAL, INTERROGANTE, GUION, CLOUSURE
     }
-
+    //Atributos para los objeto Atoms
     public Type type;
     public char caracter;
 
