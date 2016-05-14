@@ -33,20 +33,9 @@ public class Find {
             }
             for (int j = 0; j < lista.size(); j++) {
                 Atom a = lista.get(j);
-                if (i == text.length()) {
-                    if (a.type == Atom.Type.DOLLAR) {
-                        return true;
-                    }
-                    if (a.caracter == '+') {
-                        if (lista.get(j - 1).type == Atom.Type.CHAR && lista.get(j - 1).caracter == text.charAt(i - 1))
-                            return true;
-                        if (lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && !RangoFallado) return true;
-                    }
-                    if (a.caracter == '*') {
-                        return true;
-                    }
-
-                    return false;
+                if (i == text.length()){
+                    if(ControlFinal(a,lista,j,i)) return true;
+                    else return false;
                 }
                 char c = text.charAt(i);
                 switch (a.type) {
@@ -109,7 +98,7 @@ public class Find {
                         }
                         if (a.caracter == '*') {
                             if (lista.get(j - 1).type == Atom.Type.CHARLISTFINAL) {
-                               j++;
+                                j++;
                             }
                         }
                         i--;
@@ -196,8 +185,19 @@ public class Find {
         tamañoRango = 0;
     }
 
-    public void ControlClousure(){
 
+    public boolean ControlFinal(Atom a,List<Atom> lista,int j,int i){
+        if (a.type == Atom.Type.DOLLAR) {
+            return true;
+        }
+        if (a.caracter == '+') {
+            if (lista.get(j - 1).type == Atom.Type.CHAR && lista.get(j - 1).caracter == text.charAt(i - 1))
+                return true;
+            if (lista.get(j - 1).type == Atom.Type.CHARLISTFINAL && !RangoFallado) return true;
+        }
+        if (a.caracter == '*') {
+            return true;
+        }
+        return false;
     }
-
 }
