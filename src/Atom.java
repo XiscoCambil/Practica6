@@ -10,17 +10,11 @@ public class Atom {
         CHAR, INICIO, DOLLAR, CHARLIST, CHARLISTFINAL, INTERROGANTE, GUION, CLOUSURE
     }
 
-
-
     public Type type;
     public char caracter;
-    public List<String> listaCaracteres = new ArrayList<>();
 
     public Atom(){}
 
-    public String toString(){
-        return type.toString() + " " + caracter;
-    }
 
 }
 
