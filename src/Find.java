@@ -201,6 +201,13 @@ public class Find {
     }
 
     //Metodo para controlar los posibles finales.
+
+
+
+
+
+
+
     private boolean ControlFinal(Atom a, List<Atom> lista, int j, int i) {
         if (a.type == Atom.Type.DOLLAR) {
             return true;
