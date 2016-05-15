@@ -16,7 +16,7 @@ public class Find {
 
     // Funcion que devulve el resultado final de la comprobacion
     public boolean match(String pattern) {
-        ReiniciarVariables();
+        RangoFallado = false;
         if (pattern.length() == 0) {
             return false;
         }
@@ -161,11 +161,14 @@ public class Find {
         while (listaRango.get(j).type != Atom.Type.CHARLISTFINAL) {
             if (listaRango.get(j).type == Atom.Type.GUION) {
                 //Rangos [a-z] o [a-zA-z]
-                if (text.charAt(c) > listaRango.get(j - 1).caracter && text.charAt(c) < listaRango.get(j + 1).caracter)
+                if (text.charAt(c) > listaRango.get(j - 1).caracter &&
+                        text.charAt(c) < listaRango.get(j + 1).caracter)
                     resultado = true;
                 //Rangos [a-zn] o [asdf]
             } else if (listaRango.get(j).type == Atom.Type.CHAR) {
-                if (listaRango.get(j + 1).type != Atom.Type.GUION && listaRango.get(j - 1).type != Atom.Type.GUION && text.charAt(c) == listaRango.get(j).caracter)
+                if (listaRango.get(j + 1).type != Atom.Type.GUION
+                        && listaRango.get(j - 1).type != Atom.Type.GUION
+                        && text.charAt(c) == listaRango.get(j).caracter)
                     resultado = true;
             }
             j++;
@@ -185,12 +188,6 @@ public class Find {
         a.type = type;
         a.caracter = c;
         return a;
-    }
-
-    //Metodo para reiniciar las variables de clase
-    private void ReiniciarVariables() {
-        RangoFallado = false;
-        tamañoRango = 0;
     }
 
     //Metodo para controlar los posibles finales.
